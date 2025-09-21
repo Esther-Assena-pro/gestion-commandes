@@ -1,13 +1,7 @@
 "use client";
 import { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
 import { parseCommandeMessage } from "../app/utils/parser";
-
-// ✅ Connexion Supabase
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_KEY
-);
+import { supabase } from "../lib/supabaseClient";
 
 export default function CommandeForm() {
   const [form, setForm] = useState({
@@ -24,27 +18,23 @@ export default function CommandeForm() {
     email: "",
   });
 
-  const [rawMessage, setRawMessage] = useState(""); // message brut collé
-  const [errors, setErrors] = useState({}); // gestion des erreurs
+  const [rawMessage, setRawMessage] = useState("");
+  const [errors, setErrors] = useState({});
 
-  // ✅ maj des champs manuels
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // ✅ importer depuis message brut
   const handleImport = () => {
+    if (!rawMessage.trim()) {
+      alert("Veuillez coller un message !");
+      return;
+    }
     try {
-      if (!rawMessage.trim()) {
-        alert("⚠️ Veuillez coller un message !");
-        return;
-      }
-
       const parsed = parseCommandeMessage(rawMessage);
 
-      // Vérifie les champs obligatoires
-      const requiredFields = ["client", "date_commande", "type_gateau", "nb_parts"];
-      const missing = requiredFields.filter((field) => !parsed[field]);
+      const required = ["client", "date_commande", "type_gateau", "nb_parts"];
+      const missing = required.filter((f) => !parsed[f]);
 
       if (missing.length > 0) {
         alert("❌ Il manque : " + missing.join(", "));
@@ -54,22 +44,20 @@ export default function CommandeForm() {
       setForm(parsed);
       alert("✅ Message importé avec succès !");
     } catch (err) {
-      alert("❌ Erreur de parsing : " + err.message);
+      alert("❌ Erreur parsing : " + err.message);
     }
   };
 
-  // ✅ valider et enregistrer
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newErrors = {};
-    if (!form.client) newErrors.client = "Nom du client obligatoire";
+    if (!form.client) newErrors.client = "Nom obligatoire";
     if (!form.date_commande) newErrors.date_commande = "Date obligatoire";
-    if (!form.type_gateau) newErrors.type_gateau = "Type de gâteau obligatoire";
-    if (!form.nb_parts) newErrors.nb_parts = "Nombre de parts obligatoire";
+    if (!form.type_gateau) newErrors.type_gateau = "Type obligatoire";
+    if (!form.nb_parts) newErrors.nb_parts = "Nombre obligatoire";
 
     setErrors(newErrors);
-
     if (Object.keys(newErrors).length > 0) return;
 
     try {
@@ -86,12 +74,14 @@ export default function CommandeForm() {
       onSubmit={handleSubmit}
       className="bg-white p-6 rounded-lg shadow-lg space-y-4 max-w-2xl mx-auto"
     >
-      <h2 className="text-2xl font-bold text-pink-600 flex items-center gap-2">
-        🍰 Nouvelle commande
-      </h2>
+      <h2 className="text-2xl font-bold text-pink-600">🍰 Nouvelle commande</h2>
 
-      {/* Zone coller message */}
+      {/* Zone message brut */}
+      <label htmlFor="rawMessage" className="font-semibold">
+        Message brut reçu
+      </label>
       <textarea
+        id="rawMessage"
         placeholder="Collez ici le message reçu..."
         value={rawMessage}
         onChange={(e) => setRawMessage(e.target.value)}
@@ -106,66 +96,124 @@ export default function CommandeForm() {
         📥 Importer depuis message
       </button>
 
-      {/* Champs */}
-      <div>
-        <input
-          name="client"
-          placeholder="Nom et prénom"
-          value={form.client}
-          onChange={handleChange}
-          className={`border p-2 w-full rounded ${errors.client ? "border-red-500" : "border-gray-300"}`}
-        />
-        {errors.client && <p className="text-red-500 text-sm">{errors.client}</p>}
-      </div>
+      {/* Champs avec labels */}
+      <label htmlFor="client">Nom et prénom</label>
+      <input
+        id="client"
+        name="client"
+        placeholder="Nom et prénom"
+        value={form.client}
+        onChange={handleChange}
+        className="border p-2 w-full rounded"
+      />
 
-      <div>
-        <input
-          name="date_commande"
-          type="date"
-          value={form.date_commande}
-          onChange={handleChange}
-          className={`border p-2 w-full rounded ${errors.date_commande ? "border-red-500" : "border-gray-300"}`}
-        />
-        {errors.date_commande && <p className="text-red-500 text-sm">{errors.date_commande}</p>}
-      </div>
+      <label htmlFor="date_commande">Date de commande</label>
+      <input
+        id="date_commande"
+        name="date_commande"
+        type="date"
+        value={form.date_commande}
+        onChange={handleChange}
+        className="border p-2 w-full rounded"
+      />
 
-      <div>
-        <input
-          name="type_gateau"
-          placeholder="Type de gâteau"
-          value={form.type_gateau}
-          onChange={handleChange}
-          className={`border p-2 w-full rounded ${errors.type_gateau ? "border-red-500" : "border-gray-300"}`}
-        />
-        {errors.type_gateau && <p className="text-red-500 text-sm">{errors.type_gateau}</p>}
-      </div>
+      <label htmlFor="type_gateau">Type de gâteau</label>
+      <input
+        id="type_gateau"
+        name="type_gateau"
+        placeholder="Type de gâteau"
+        value={form.type_gateau}
+        onChange={handleChange}
+        className="border p-2 w-full rounded"
+      />
 
-      <div>
-        <input
-          name="nb_parts"
-          type="number"
-          placeholder="Nombre de parts"
-          value={form.nb_parts}
-          onChange={handleChange}
-          className={`border p-2 w-full rounded ${errors.nb_parts ? "border-red-500" : "border-gray-300"}`}
-        />
-        {errors.nb_parts && <p className="text-red-500 text-sm">{errors.nb_parts}</p>}
-      </div>
+      <label htmlFor="nb_parts">Nombre de parts</label>
+      <input
+        id="nb_parts"
+        name="nb_parts"
+        type="number"
+        placeholder="Nombre de parts"
+        value={form.nb_parts}
+        onChange={handleChange}
+        className="border p-2 w-full rounded"
+      />
 
-      <input name="saveur" placeholder="Saveurs" value={form.saveur} onChange={handleChange} className="border p-2 w-full rounded" />
-      <textarea name="details" placeholder="Détails personnalisés" value={form.details} onChange={handleChange} className="border p-2 w-full rounded" />
-      <input name="livraison" placeholder="Livraison" value={form.livraison} onChange={handleChange} className="border p-2 w-full rounded" />
-      <input name="adresse" placeholder="Adresse de livraison" value={form.adresse} onChange={handleChange} className="border p-2 w-full rounded" />
-      <input name="payment" placeholder="Mode de paiement" value={form.payment} onChange={handleChange} className="border p-2 w-full rounded" />
-      <input name="telephone" placeholder="Téléphone" value={form.telephone} onChange={handleChange} className="border p-2 w-full rounded" />
-      <input name="email" placeholder="Email" type="email" value={form.email} onChange={handleChange} className="border p-2 w-full rounded" />
+      <label htmlFor="saveur">Saveurs</label>
+      <input
+        id="saveur"
+        name="saveur"
+        placeholder="Saveurs"
+        value={form.saveur}
+        onChange={handleChange}
+        className="border p-2 w-full rounded"
+      />
 
-      {/* Bouton */}
+      <label htmlFor="details">Détails personnalisés</label>
+      <textarea
+        id="details"
+        name="details"
+        placeholder="Détails personnalisés"
+        value={form.details}
+        onChange={handleChange}
+        className="border p-2 w-full rounded"
+      />
+
+      <label htmlFor="livraison">Livraison</label>
+      <input
+        id="livraison"
+        name="livraison"
+        placeholder="Livraison"
+        value={form.livraison}
+        onChange={handleChange}
+        className="border p-2 w-full rounded"
+      />
+
+      <label htmlFor="adresse">Adresse de livraison</label>
+      <input
+        id="adresse"
+        name="adresse"
+        placeholder="Adresse de livraison"
+        value={form.adresse}
+        onChange={handleChange}
+        className="border p-2 w-full rounded"
+      />
+
+      <label htmlFor="payment">Mode de paiement</label>
+      <input
+        id="payment"
+        name="payment"
+        placeholder="Mode de paiement"
+        value={form.payment}
+        onChange={handleChange}
+        className="border p-2 w-full rounded"
+      />
+
+      <label htmlFor="telephone">Téléphone</label>
+      <input
+        id="telephone"
+        name="telephone"
+        placeholder="Téléphone"
+        value={form.telephone}
+        onChange={handleChange}
+        className="border p-2 w-full rounded"
+      />
+
+      <label htmlFor="email">Email</label>
+      <input
+        id="email"
+        name="email"
+        placeholder="Email"
+        type="email"
+        value={form.email}
+        onChange={handleChange}
+        className="border p-2 w-full rounded"
+      />
+
       <button
         type="submit"
         className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition"
       >
-        ✅ Enregistrer
+        Enregistrer
       </button>
     </form>
   );
