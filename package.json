@@ -10,8 +10,13 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",
+    "docx": "^9.5.1",
+    "docxtemplater": "^3.66.3",
+    "file-saver": "^2.0.5",
     "jspdf": "^3.0.2",
+    "jspdf-autotable": "^5.0.2",
     "next": "15.5.3",
+    "pizzip": "^3.2.0",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },

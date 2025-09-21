@@ -1,66 +1,51 @@
-import { supabase } from "../../../lib/supabaseClient"
-import FactureButton from "../../../components/FactureButton"
+"use client";
 
-export default async function CommandeDetail({ params }) {
-  const id = params.id
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
+import { generateFactureDocx } from "../../utils/generateDocx";
 
-  // Récupérer la commande
-  const { data: commande } = await supabase
-    .from("commandes")
-    .select("*")
-    .eq("id", id)
-    .single()
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_KEY
+);
 
-  // Récupérer ses lignes (produits)
-  const { data: lignes } = await supabase
-    .from("commandes_lignes")
-    .select("*")
-    .eq("commande_id", id)
+export default function CommandePage() {
+  const params = useParams();
+  const id = params.id;
+  const [commande, setCommande] = useState(null);
+
+  useEffect(() => {
+    async function fetchCommande() {
+      const { data, error } = await supabase
+        .from("commandes")
+        .select("*")
+        .eq("id", id)
+        .single();
+      if (!error) setCommande(data);
+    }
+    if (id) fetchCommande();
+  }, [id]);
+
+  if (!commande) return <div>Chargement...</div>;
 
   return (
-    <main className="p-6 bg-gray-50 min-h-screen">
-      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-        <h1 className="text-2xl font-bold mb-4">
-          🧾 Commande #{commande?.id}
-        </h1>
-        <p><strong>Client :</strong> {commande?.client}</p>
-        <p><strong>Date :</strong> {commande?.date_commande}</p>
-        <p><strong>Type gâteau :</strong> {commande?.type_gateau}</p>
-        <p><strong>Parts :</strong> {commande?.nb_parts}</p>
-        <p><strong>Livraison :</strong> {commande?.livraison}</p>
-      </div>
+    <div className="bg-white p-6 rounded-lg shadow-lg">
+      <h2 className="text-2xl font-bold mb-4">Facture Proforma #{commande.id}</h2>
+      <p><strong>Client :</strong> {commande.client}</p>
+      <p><strong>Date :</strong> {commande.date_commande}</p>
+      <p><strong>Type gâteau :</strong> {commande.type_gateau}</p>
+      <p><strong>Parts :</strong> {commande.nb_parts}</p>
+      <p><strong>Livraison :</strong> {commande.livraison}</p>
 
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold mb-4">📋 Produits</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse border">
-            <thead>
-              <tr className="bg-pink-100">
-                <th className="border px-3 py-2 text-left">Désignation</th>
-                <th className="border px-3 py-2">Unité</th>
-                <th className="border px-3 py-2">Prix U (€)</th>
-                <th className="border px-3 py-2">Quantité</th>
-                <th className="border px-3 py-2">Total (€)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {lignes?.map(l => (
-                <tr key={l.id} className="hover:bg-gray-50">
-                  <td className="border px-3 py-2">{l.designation}</td>
-                  <td className="border px-3 py-2">{l.unite}</td>
-                  <td className="border px-3 py-2">{l.prix_unitaire}</td>
-                  <td className="border px-3 py-2">{l.quantite}</td>
-                  <td className="border px-3 py-2">{l.prix_total}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="mt-6">
-          <FactureButton commande={commande} lignes={lignes} />
-        </div>
+      <div className="mt-6">
+        <button
+          onClick={() => generateFactureDocx(commande)}
+          className="px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700"
+        >
+          Télécharger Facture Word
+        </button>
       </div>
-    </main>
-  )
+    </div>
+  );
 }
