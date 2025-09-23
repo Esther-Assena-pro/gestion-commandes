@@ -50,7 +50,7 @@ export default function NouvelleCommande() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-200 to-blue-200 flex items-center justify-center p-6">
-      <div className="w-full max-w-3xl bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-gray-200">
+      <div className="w-full max-w-3xl bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-gray-200">
         <h1 className="text-4xl font-extrabold mb-6 text-center bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
           🍰 Nouvelle Commande
         </h1>
@@ -65,7 +65,7 @@ export default function NouvelleCommande() {
             onChange={(e) => setRawMessage(e.target.value)}
             rows={5}
             placeholder="Collez ici le message reçu..."
-            className="w-full border border-gray-300 rounded-lg p-4 focus:ring-2 focus:ring-pink-400 focus:outline-none bg-white/80"
+            className="w-full border border-pink-300 rounded-lg p-4 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition bg-gray-50 placeholder:text-gray-700"
           />
           <button
             type="button"
@@ -91,7 +91,7 @@ export default function NouvelleCommande() {
               value={formData.client}
               onChange={handleChange}
               placeholder="Nom et prénom"
-              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-400 bg-white/80"
+              className="w-full border border-pink-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-gray-50 placeholder:text-gray-700"
             />
           </div>
 
@@ -104,7 +104,7 @@ export default function NouvelleCommande() {
               name="date_commande"
               value={formData.date_commande}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-400 bg-white/80"
+              className="w-full border border-pink-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-gray-50"
             />
           </div>
 
@@ -117,7 +117,7 @@ export default function NouvelleCommande() {
               value={formData.type_gateau}
               onChange={handleChange}
               placeholder="Ex: Anniversaire"
-              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-400 bg-white/80"
+              className="w-full border border-pink-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-gray-50 placeholder:text-gray-700"
             />
           </div>
 
@@ -130,7 +130,7 @@ export default function NouvelleCommande() {
               name="nb_parts"
               value={formData.nb_parts}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-400 bg-white/80"
+              className="w-full border border-pink-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-gray-50 placeholder:text-gray-700"
             />
           </div>
 
@@ -143,7 +143,7 @@ export default function NouvelleCommande() {
               value={formData.saveur}
               onChange={handleChange}
               placeholder="Ex: Chocolat praliné"
-              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-400 bg-white/80"
+              className="w-full border border-pink-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-gray-50 placeholder:text-gray-700"
             />
           </div>
 
@@ -156,8 +156,8 @@ export default function NouvelleCommande() {
               value={formData.details}
               onChange={handleChange}
               rows={3}
-              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-400 bg-white/80"
               placeholder="Ex: Inscription sur le gâteau..."
+              className="w-full border border-pink-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-gray-50 placeholder:text-gray-700"
             />
           </div>
 
@@ -170,7 +170,7 @@ export default function NouvelleCommande() {
               name="livraison"
               value={formData.livraison}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-400 bg-white/80"
+              className="w-full border border-pink-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-gray-50"
             >
               <option>Sur place</option>
               <option>Livraison</option>
@@ -186,7 +186,7 @@ export default function NouvelleCommande() {
               value={formData.adresse}
               onChange={handleChange}
               placeholder="Ex: 10 rue des Maltotiers"
-              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-400 bg-white/80"
+              className="w-full border border-pink-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-gray-50 placeholder:text-gray-700"
             />
           </div>
 
@@ -200,7 +200,7 @@ export default function NouvelleCommande() {
               value={formData.telephone}
               onChange={handleChange}
               placeholder="06 95 64 41 22"
-              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-400 bg-white/80"
+              className="w-full border border-pink-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-gray-50 placeholder:text-gray-700"
             />
           </div>
 
@@ -214,7 +214,7 @@ export default function NouvelleCommande() {
               value={formData.email}
               onChange={handleChange}
               placeholder="email@example.com"
-              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-400 bg-white/80"
+              className="w-full border border-pink-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-gray-50 placeholder:text-gray-700"
             />
           </div>
 
@@ -227,7 +227,7 @@ export default function NouvelleCommande() {
               name="payment"
               value={formData.payment}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-400 bg-white/80"
+              className="w-full border border-pink-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-gray-50"
             >
               <option value="">-- Sélectionner --</option>
               <option>Virement bancaire</option>
