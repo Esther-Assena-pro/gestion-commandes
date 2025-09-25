@@ -14,7 +14,7 @@ export default async function Home() {
           📦 Gestion des Commandes
         </h1>
         <Link
-          href="/nouvelle/page"
+          href="/nouvelle"
           className="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg shadow-md transition"
         >
           ➕ Nouvelle commande
