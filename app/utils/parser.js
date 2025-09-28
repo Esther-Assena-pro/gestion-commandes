@@ -1,7 +1,9 @@
+// utils/parser.js
+
 // Supprime balises HTML pour éviter injections
 function sanitize(input) {
   if (!input) return "";
-  return input.replace(/<[^>]*>?/gm, ""); 
+  return input.replace(/<[^>]*>?/gm, "").trim();
 }
 
 export function parseCommandeMessage(message) {
@@ -10,7 +12,7 @@ export function parseCommandeMessage(message) {
     type_gateau: sanitize(/Type de gâteau:\s*(.*)/i.exec(message)?.[1]),
     nb_parts: sanitize(/Nombre de parts:\s*(.*)/i.exec(message)?.[1]),
     saveur: sanitize(/Saveurs souhaitées:\s*(.*)/i.exec(message)?.[1]),
-    date_commande: sanitize(/Date souhaitée:\s*(.*)/i.exec(message)?.[1]),
+    date_souhaitee: sanitize(/Date souhaitée:\s*(.*)/i.exec(message)?.[1]), // ✅ corrigé
     details: sanitize(
       /Détails personnalisés:\s*([\s\S]*?)(?=Option|Adresse|Mode|Téléphone|Email|$)/i.exec(message)?.[1]
     ),

@@ -6,7 +6,7 @@ import { supabase } from "../lib/supabaseClient";
 export default function CommandeForm() {
   const [form, setForm] = useState({
     client: "",
-    date_commande: "",
+    date_souhaitee: "", // ✅ corrigé
     type_gateau: "",
     nb_parts: "",
     saveur: "",
@@ -33,7 +33,7 @@ export default function CommandeForm() {
     try {
       const parsed = parseCommandeMessage(rawMessage);
 
-      const required = ["client", "date_commande", "type_gateau", "nb_parts"];
+      const required = ["client", "date_souhaitee", "type_gateau", "nb_parts"];
       const missing = required.filter((f) => !parsed[f]);
 
       if (missing.length > 0) {
@@ -53,7 +53,7 @@ export default function CommandeForm() {
 
     const newErrors = {};
     if (!form.client) newErrors.client = "Nom obligatoire";
-    if (!form.date_commande) newErrors.date_commande = "Date obligatoire";
+    if (!form.date_souhaitee) newErrors.date_souhaitee = "Date obligatoire";
     if (!form.type_gateau) newErrors.type_gateau = "Type obligatoire";
     if (!form.nb_parts) newErrors.nb_parts = "Nombre obligatoire";
 
@@ -61,18 +61,29 @@ export default function CommandeForm() {
     if (Object.keys(newErrors).length > 0) return;
 
     try {
-      // 🟢 Conversion de la date en format ISO pour Supabase
       const payload = {
         ...form,
-        date_commande: form.date_commande
-          ? new Date(form.date_commande).toISOString()
-          : null,
+        nb_parts: form.nb_parts ? parseInt(form.nb_parts, 10) : null,
+        date_souhaitee: form.date_souhaitee || null,
       };
 
       const { error } = await supabase.from("commandes").insert([payload]);
       if (error) throw error;
 
       alert("✅ Commande enregistrée !");
+      setForm({
+        client: "",
+        date_souhaitee: "",
+        type_gateau: "",
+        nb_parts: "",
+        saveur: "",
+        details: "",
+        livraison: "",
+        adresse: "",
+        payment: "",
+        telephone: "",
+        email: "",
+      });
     } catch (err) {
       console.error("Erreur Supabase:", err);
       alert("❌ Erreur : " + err.message);
@@ -117,12 +128,12 @@ export default function CommandeForm() {
         className="border p-2 w-full rounded"
       />
 
-      <label htmlFor="date_commande">Date de commande</label>
+      <label htmlFor="date_souhaitee">Date souhaitée</label>
       <input
-        id="date_commande"
-        name="date_commande"
+        id="date_souhaitee"
+        name="date_souhaitee"
         type="date"
-        value={form.date_commande}
+        value={form.date_souhaitee}
         onChange={handleChange}
         className="border p-2 w-full rounded"
       />
