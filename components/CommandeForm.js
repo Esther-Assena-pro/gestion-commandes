@@ -61,10 +61,20 @@ export default function CommandeForm() {
     if (Object.keys(newErrors).length > 0) return;
 
     try {
-      const { error } = await supabase.from("commandes").insert([form]);
+      // 🟢 Conversion de la date en format ISO pour Supabase
+      const payload = {
+        ...form,
+        date_commande: form.date_commande
+          ? new Date(form.date_commande).toISOString()
+          : null,
+      };
+
+      const { error } = await supabase.from("commandes").insert([payload]);
       if (error) throw error;
+
       alert("✅ Commande enregistrée !");
     } catch (err) {
+      console.error("Erreur Supabase:", err);
       alert("❌ Erreur : " + err.message);
     }
   };
@@ -96,7 +106,7 @@ export default function CommandeForm() {
         📥 Importer depuis message
       </button>
 
-      {/* Champs avec labels */}
+      {/* Champs du formulaire */}
       <label htmlFor="client">Nom et prénom</label>
       <input
         id="client"
